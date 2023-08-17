@@ -24,9 +24,10 @@ public class MovieService {
 	private MovieRepository repository;
 	
 	@Transactional(readOnly = true)
-	public Page<MovieMinDTO> findAll(Pageable pageable){
+	public Page<MovieMinDTO> find(Long genreId, Pageable pageable){
 		pageable = PageRequest.of(0, pageable.getPageSize(), Sort.by("title"));
-		Page<Movie> page = repository.findAll(pageable);
+		
+		Page<Movie> page = genreId != 0 ? repository.findMoviesByGenre(genreId, pageable) : repository.findAll(pageable);
 		
 		return page.map(x -> new MovieMinDTO(x));
 	}
@@ -37,5 +38,4 @@ public class MovieService {
 		Movie movie = optional.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new MovieDTO(movie);		
 	}
-	
 }
