@@ -1,6 +1,7 @@
 
 package com.devsuperior.movieflix.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.movieflix.dto.MovieDTO;
 import com.devsuperior.movieflix.dto.MovieMinDTO;
+import com.devsuperior.movieflix.dto.ReviewDTO;
 import com.devsuperior.movieflix.entities.Movie;
 import com.devsuperior.movieflix.repositories.MovieRepository;
+import com.devsuperior.movieflix.repositories.ReviewRepsitory;
 import com.devsuperior.movieflix.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -22,6 +25,9 @@ public class MovieService {
 
 	@Autowired
 	private MovieRepository repository;
+	
+	@Autowired
+	private ReviewRepsitory reviewRepsitory;
 	
 	@Transactional(readOnly = true)
 	public Page<MovieMinDTO> find(Long genreId, Pageable pageable){
@@ -40,9 +46,8 @@ public class MovieService {
 	}
 	
 	@Transactional
-	public MovieDTO findByIdWithReviews(Long id) {
-		Optional<Movie> optional = repository.findById(id);
-		Movie movie = optional.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new MovieDTO(movie);		
+	public List<ReviewDTO> findByIdWithReviews(Long id) {
+		List<ReviewDTO> dto = reviewRepsitory.findReviewByMovie(id);
+		return dto;		
 	}
 }
