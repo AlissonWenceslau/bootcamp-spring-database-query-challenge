@@ -38,4 +38,11 @@ public class MovieService {
 		Movie movie = optional.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new MovieDTO(movie);		
 	}
+	
+	@Transactional
+	public MovieDTO findByIdWithReviews(Long id) {
+		Optional<Movie> optional = repository.findById(id);
+		Movie movie = optional.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+		return new MovieDTO(movie);		
+	}
 }
